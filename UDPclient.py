@@ -7,16 +7,16 @@ serverIP = '127.0.0.255'  # localhost
 serverPort = 6000
 
 clientSocket = socket(AF_INET, SOCK_DGRAM)
-sentence = input('Input lowercase username: ')
-dictionary = {
-  "username":  sentence
-}
 
 
 while 1:
-  json_object = json.dumps(dictionary, indent=2)
+  sentence = input('Input lowercase username: ')
+  dictionary = {
+    "username":  sentence
+  }
+  json_object = json.dumps(dictionary, indent = 3)
   clientSocket.sendto(json_object.encode(), (serverIP, serverPort))
   modifiedSentence, serverAddress = clientSocket.recvfrom(1024)
   print ('From Server:', modifiedSentence.decode())
-  sleep(1)
+  sleep(8)
 clientSocket.close()
