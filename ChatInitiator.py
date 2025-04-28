@@ -1,6 +1,7 @@
 import json
 import time
 import base64
+import pyDes
 from socket import *
 
 discovered_users = {}
@@ -20,12 +21,17 @@ def secure_chat():
   data = clientsocket.recv(1024).decode()
   received_key = json.loads(data)
   key=((2^int(publickey)%19)^int(received_key['KEY']))%19
+  bytekey = key.to_bytes(8,'big')
   print("Enter your message: ")
   message = input()
+  k = pyDes.des(bytekey, pyDes.ECB, padmode=pyDes.PAD_PKCS5)
+  encrypted = k.encrypt(message)
+  print("encyripted data: " , encrypted)
+
   encrypted_message = {
-    "encrypted_message": base64.b64encode(message.encode()).decode(),
+    "encrypted_message": base64.b64encode(encrypted)
   }
-  json_message = json.dumps(encrypted_message,indent=1)
+  json_message = json.dumps(str(encrypted_message),indent=1)
   clientsocket.send(json_message.encode())
 
 def display_users():
@@ -38,6 +44,8 @@ def display_users():
           print(f"{username} " + "Online")
         elif info == 'timestamp' and current_time - data[username][info] < 900:
           print(f"{username} " + "Away")
+
+
 
 while True:
   mode = input("Please enter Users, History or Chat: ").lower()
