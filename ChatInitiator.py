@@ -23,8 +23,7 @@ def secure_chat(user_name):
   clientsocket.send(json_object.encode())
   data = clientsocket.recv(1024).decode()
   received_key = json.loads(data)
-  print(received_key)
-  key=((2^int(publickey)%19)^int(received_key['key']))%19
+  key=((2^int(publickey)%19)^int(received_key['KEY']))%19
   bytekey = key.to_bytes(8,'big')
   print("Enter your message: ")
   message = input()
@@ -33,10 +32,11 @@ def secure_chat(user_name):
   print("encyripted data: " , encrypted)
 
   write_to_log(message, user_name)
+  encrypted = str(encrypted)
   encrypted_message = {
-    "encrypted_message": base64.b64encode(encrypted)
+    "encrypted_message": encrypted
   }
-  json_message = json.dumps(str(encrypted_message),indent=1)
+  json_message = json.dumps(encrypted_message,indent=1)
   clientsocket.send(json_message.encode())
 
 def display_users():
