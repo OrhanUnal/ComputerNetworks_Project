@@ -13,7 +13,7 @@ while True:  # welcoming socket  continues listening even after user leaves
    while True:  # be ready to receive and capitalize more than 1 msg
       message = connectionSocket.recv(1024)
       thing = json.loads(message)
-      capitalizedMessage = message.upper()
+      capitalizedMessage = message
       connectionSocket.send(capitalizedMessage)
       print(thing)
    connectionSocket.close()
