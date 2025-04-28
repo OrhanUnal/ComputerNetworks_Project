@@ -2,6 +2,7 @@ import json
 import time
 import base64
 from datetime import datetime
+import pyDes
 from socket import *
 
 log = {}
@@ -24,13 +25,18 @@ def secure_chat(user_name):
   received_key = json.loads(data)
   print(received_key)
   key=((2^int(publickey)%19)^int(received_key['key']))%19
+  bytekey = key.to_bytes(8,'big')
   print("Enter your message: ")
   message = input()
+  k = pyDes.des(bytekey, pyDes.ECB, padmode=pyDes.PAD_PKCS5)
+  encrypted = k.encrypt(message)
+  print("encyripted data: " , encrypted)
+
   write_to_log(message, user_name)
   encrypted_message = {
-    "encrypted_message": base64.b64encode(message.encode()).decode(),
+    "encrypted_message": base64.b64encode(encrypted)
   }
-  json_message = json.dumps(encrypted_message,indent=1)
+  json_message = json.dumps(str(encrypted_message),indent=1)
   clientsocket.send(json_message.encode())
 
 def display_users():
