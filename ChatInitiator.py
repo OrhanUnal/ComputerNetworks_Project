@@ -63,26 +63,27 @@ def unsecure_chat(user_name):
 def write_to_log(message, user_name):
   with open("chat_log.json", "r") as input_file:
     data = json.load(input_file)
-    if "user_name" in data:
-      for line in data:
-        log[line] = {"username": data[line]['username'], "message": data[line]['message'], "sent": data[line]['sent']}
-  log[datetime.now().strftime("%H:%M:%S")] = {"username": user_name, "message": message, "sent": "RECEIVED"}
+    for line in data:
+      log[line] = {"username": data[line]['username'], "message": data[line]['message'], "sent": data[line]['sent']}
+  log[datetime.now().strftime("%H:%M:%S")] = {"username": user_name, "message": message, "sent": "SENT"}
   with open('chat_log.json', 'w') as output_file:
     json.dump(log, output_file)
     output_file.write("\n")
 
-def history():
+def history(name):
   with open('chat_log.json', 'r') as outfile:
     log = json.load(outfile)
     for data in log:
-      print(data + " " + str(log[data]['username']) + "      " + log[data]['message'] + " " + log[data]['sent'])
+      if log[data]['username'] == name:
+        print(data + " " + str(log[data]['username']) + "      " + log[data]['message'] + " " + log[data]['sent'])
 
 while True:
   mode = input("Please enter Users, History or Chat: ").lower()
   if mode == "users" or mode == "user":
     display_users()
   elif mode == "history":
-    history()
+    history_name = input("Please enter that person's name: ")
+    history(history_name)
   elif mode == "chat":
     chat_user = input("Please enter Username: ").lower()
     with open('discovered.json','r') as outfile:

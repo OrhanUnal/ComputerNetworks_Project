@@ -17,8 +17,7 @@ while True:
       if 'username' in message_json:
          username = message_json['username'].lower()
          discovered_users[username] = {"ip": clientAddress[0], "timestamp": time.time()}
-         print(f"Detected user: {username} ({clientAddress[0]}) is online")
-         print(discovered_users[username])
+         print(f"Detected user: {username} is online")
          with open('discovered.json', 'w') as outfile:
             json.dump(discovered_users, outfile)
             outfile.write("\n")

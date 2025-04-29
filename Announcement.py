@@ -11,7 +11,6 @@ dictionary = {
   "username":  sentence
 }
 
-
 while 1:
   json_object = json.dumps(dictionary, indent = 3)
   clientSocket.sendto(json_object.encode(), (serverIP, serverPort))
