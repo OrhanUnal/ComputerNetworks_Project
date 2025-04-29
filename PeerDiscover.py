@@ -10,8 +10,8 @@ print ('The server is ready to receive')
 discovered_users = {}
 
 while True:
-   message, clientAddress = serverSocket.recvfrom(1024)
-   message = message.decode('utf-8')
+
+
    try:
       message_json = json.loads(message)
       if 'username' in message_json:
@@ -24,10 +24,6 @@ while True:
             outfile.write("\n")
    except json.JSONDecodeError:
       print("Error: Invalid JSON format")
-
-   capitalizedMessage = message.upper()
-   serverSocket.sendto(capitalizedMessage.encode(), clientAddress)
-      
 serverSocket.close()
 
 

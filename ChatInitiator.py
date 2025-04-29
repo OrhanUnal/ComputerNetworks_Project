@@ -16,6 +16,7 @@ clientsocket = socket(AF_INET, SOCK_STREAM)
 
 def secure_chat(user_name):
   publickey = input('Input key: ')
+  publickey = publickey % 19
   dictionary = {
     "key": publickey
   }
@@ -58,12 +59,17 @@ def unsecure_chat(user_name):
   json_message = json.dumps(unencrypted_message, indent=1)
   clientsocket.send(json_message.encode())
 
+
 def write_to_log(message, user_name):
-  log[datetime.now().strftime("%H:%M:%S")] = {"username": user_name, "message": message, "sent": "SENT"}
-  print(log)
-  with open('chat_log.json', 'w') as outfile:
-    json.dump(log, outfile)
-    outfile.write("\n")
+  with open("chat_log.json", "r") as input_file:
+    data = json.load(input_file)
+    if "user_name" in data:
+      for line in data:
+        log[line] = {"username": data[line]['username'], "message": data[line]['message'], "sent": data[line]['sent']}
+  log[datetime.now().strftime("%H:%M:%S")] = {"username": user_name, "message": message, "sent": "RECEIVED"}
+  with open('chat_log.json', 'w') as output_file:
+    json.dump(log, output_file)
+    output_file.write("\n")
 
 def history():
   with open('chat_log.json', 'r') as outfile:
