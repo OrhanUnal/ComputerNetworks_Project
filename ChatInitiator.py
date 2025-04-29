@@ -79,11 +79,7 @@ def history(name):
       if log[data]['username'] == name:
         print(data + " " + str(log[data]['username']) + "      " + log[data]['message'] + " " + log[data]['sent'])
 
-def start_thread():
-  subprocess.run(["python","ChatResponder.py"])
 while True:
-  t1 = threading.Thread(target=start_thread)
-  t1.start()
   mode = input("Please enter Users, History or Chat: ").lower()
   if mode == "users" or mode == "user":
     display_users()

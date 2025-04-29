@@ -32,7 +32,7 @@ while True:  # welcoming socket continues listening even after user leaves
         data = json.load(file)
         for line in data:
             if data[line]['ip'] == addr[0]:
-                name = line['username']
+                name = line
     while True:  # be ready to receive and capitalize more than 1 msg
         message = connectionSocket.recv(1024)
         thing = json.loads(message)
