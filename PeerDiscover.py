@@ -10,12 +10,12 @@ print ('The server is ready to receive')
 discovered_users = {}
 
 while True:
-
-
+   message, clientAddress = serverSocket.recvfrom(1024)
+   message = message.decode('utf-8')
    try:
       message_json = json.loads(message)
       if 'username' in message_json:
-         username = message_json['username']
+         username = message_json['username'].lower()
          discovered_users[username] = {"ip": clientAddress[0], "timestamp": time.time()}
          print(f"Detected user: {username} ({clientAddress[0]}) is online")
          print(discovered_users[username])

@@ -16,7 +16,7 @@ clientsocket = socket(AF_INET, SOCK_STREAM)
 
 def secure_chat(user_name):
   publickey = input('Input key: ')
-  publickey = publickey % 19
+  publickey = int(publickey) % 19
   dictionary = {
     "key": publickey
   }
@@ -84,7 +84,7 @@ while True:
   elif mode == "history":
     history()
   elif mode == "chat":
-    chat_user = input("Please enter Username: ")
+    chat_user = input("Please enter Username: ").lower()
     with open('discovered.json','r') as outfile:
       data = json.load(outfile)
       for username in data:
@@ -102,4 +102,3 @@ while True:
             print("Please enter Secure or Unsecure: ")
         else:
           print("That username is not registered or the person you are trying to reach is not available")
-          clientsocket.close()
