@@ -2,7 +2,7 @@ import json
 import time
 import base64
 from datetime import datetime
-import pyDes
+from cryptography.fernet import Fernet
 from socket import *
 
 log = {}
@@ -23,16 +23,14 @@ def secure_chat(user_name):
   clientsocket.send(json_object.encode())
   data = clientsocket.recv(1024).decode()
   received_key = json.loads(data)
-  key=((2^int(publickey)%19)^int(received_key['KEY']))%19
-  bytekey = key.to_bytes(8,'big')
-  print("Enter your message: ")
-  message = input()
-  k = pyDes.des(bytekey, pyDes.ECB, padmode=pyDes.PAD_PKCS5)
-  encrypted = k.encrypt(message)
-  print("encyripted data: " , encrypted)
-
+  key = str(((2^int(publickey)%19)^int(received_key['key']))%19)
+  key = base64.urlsafe_b64encode(key.encode().ljust(32, b'0'))
+  print(key)
+  fernet = Fernet(key)
+  message = input("Enter your message: ")
+  encrypted = str(fernet.encrypt(message.encode()).decode())
+  print(encrypted)
   write_to_log(message, user_name)
-  encrypted = str(encrypted)
   encrypted_message = {
     "encrypted_message": encrypted
   }
@@ -52,12 +50,13 @@ def display_users():
 
 def unsecure_chat(user_name):
   message = input("Please enter your message: ")
+  write_to_log(message, user_name)
+  message = base64.b64encode(message.encode()).decode()
   unencrypted_message = {
-    "unencrypted_message": base64.b64encode(message.encode()).decode(),
+    "unencrypted_message": message,
   }
   json_message = json.dumps(unencrypted_message, indent=1)
   clientsocket.send(json_message.encode())
-  write_to_log(message, user_name)
 
 def write_to_log(message, user_name):
   log[datetime.now().strftime("%H:%M:%S")] = {"username": user_name, "message": message, "sent": "SENT"}
