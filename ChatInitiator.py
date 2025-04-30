@@ -102,5 +102,5 @@ while True:
           else:
             print("Please enter Secure or Unsecure: ")
           break
-        if not user_found:
-          print("That username is not registered or the person you are trying to reach is not available")
+      if not user_found:
+        print("That username is not registered or the person you are trying to reach is not available")
