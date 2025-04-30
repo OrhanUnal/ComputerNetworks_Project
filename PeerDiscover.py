@@ -1,6 +1,5 @@
 import json
 import time
-from datetime import datetime
 from socket import *
 serverPort = 6000
 serverSocket = socket( AF_INET , SOCK_DGRAM )

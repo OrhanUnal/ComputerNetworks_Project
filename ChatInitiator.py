@@ -2,7 +2,7 @@ import json
 import time
 import base64
 from datetime import datetime
-from cryptography.fernet import Fernet
+import pyDes
 from socket import *
 
 log = {}
@@ -25,12 +25,10 @@ def secure_chat(user_name):
   data = clientsocket.recv(1024).decode()
   received_key = json.loads(data)
   key = str(((2^int(publickey)%19)^int(received_key['key']))%19)
-  key = base64.urlsafe_b64encode(key.encode().ljust(32, b'0'))
-  print(key)
-  fernet = Fernet(key)
+  key = base64.urlsafe_b64encode(key.encode()).ljust(8, b'0')
+  pydes = pyDes.des(key, padmode=pyDes.PAD_PKCS5)
   message = input("Enter your message: ")
-  encrypted = str(fernet.encrypt(message.encode()).decode())
-  print(encrypted)
+  encrypted = str(pydes.encrypt(message))
   write_to_log(message, user_name)
   encrypted_message = {
     "encrypted_message": encrypted
@@ -77,6 +75,7 @@ def history(name):
       if log[data]['username'] == name:
         print(data + " " + str(log[data]['username']) + "      " + log[data]['message'] + " " + log[data]['sent'])
 
+user_found = False
 while True:
   mode = input("Please enter Users, History or Chat: ").lower()
   if mode == "users" or mode == "user":
@@ -90,6 +89,7 @@ while True:
       data = json.load(outfile)
       for username in data:
         if username == chat_user and time.time() - data[username]['timestamp'] < 900:
+          user_found = True
           serverIP = data[username]['ip']
           if not connected:
             clientsocket.connect((serverIP, serverPort))
@@ -101,5 +101,6 @@ while True:
             unsecure_chat(username)
           else:
             print("Please enter Secure or Unsecure: ")
-        else:
+          break
+        if not user_found:
           print("That username is not registered or the person you are trying to reach is not available")
