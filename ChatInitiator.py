@@ -82,7 +82,13 @@ def history(name):
         for data in log:
           if log[data]['username'] == name:
             history_found = True
-            print("At " + data + " " + str(log[data]['username']) + " " + log[data]['sent'] + "   " + log[data]['message'] + " ")
+            if log[data]['sent'] == "SENT":
+              print("At " + data + " " + "You " + " " + log[data]['sent'] + " to " +  str(log[data]['username']) +"   " +
+                    log[data]['message'] + " ")
+            elif log[data]['sent'] == "RECEIVED":
+              print(
+                "At " + data + " " + "You " + " " + log[data]['sent'] + " from " + str(log[data]['username']) + "   " +
+                log[data]['message'] + " ")
   except FileNotFoundError:
     print("There is no history file ")
   if not history_found:
@@ -110,6 +116,7 @@ while True:
               connected = True
             except:
               print("Connection failed")
+              continue
           security = input("Do you want to chat securely or not?\n" + "Please enter Secure or Unsecure: ").lower()
           if security == "secure":
             secure_chat(username)
