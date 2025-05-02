@@ -2,7 +2,7 @@ import ast
 from contextlib import nullcontext
 from socket import *
 import json
-from pyDes import des, CBC, PAD_PKCS5
+from pyDes import triple_des, CBC, PAD_PKCS5
 import base64
 from datetime import datetime
 
@@ -55,8 +55,8 @@ while True:  # welcoming socket continues listening even after user leaves
             print("Key received from client. Generating and sending my public key...")
             received_key = int(thing['key'])
             key = str(((2 ^ int(my_public_key) % 19) ^ received_key) % 19)
-            key = base64.urlsafe_b64encode(key.encode()).ljust(8, b'0')
-            pydes = des(key, CBC, key, pad=None, padmode=PAD_PKCS5)
+            key = base64.urlsafe_b64encode(key.encode()).ljust(24, b'0')
+            pydes = triple_des(key, padmode=PAD_PKCS5)
         elif "encrypted_message" in thing:
             received_message = pydes.decrypt(base64.b64decode(thing["encrypted_message"])).decode()
             print("Secure message: ", received_message)

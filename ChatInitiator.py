@@ -3,7 +3,7 @@ import time
 import base64
 from contextlib import nullcontext
 from datetime import datetime
-from pyDes import des, CBC, PAD_PKCS5
+from pyDes import triple_des, CBC, PAD_PKCS5
 from socket import *
 
 log = {}
@@ -26,8 +26,8 @@ def secure_chat(user_name):
   data = clientsocket.recv(1024).decode()
   received_key = json.loads(data)
   key = str(((2^int(publickey)%19)^int(received_key['key']))%19)
-  key = base64.urlsafe_b64encode(key.encode()).ljust(8, b'0')
-  pydes = des(key, CBC, key, pad=None, padmode=PAD_PKCS5)
+  key = base64.urlsafe_b64encode(key.encode()).ljust(24, b'0')
+  pydes = triple_des(key, padmode=PAD_PKCS5)
   message = input("Enter your message: ")
   write_to_log(message, user_name)
   encrypted = base64.b64encode(pydes.encrypt(message)).decode()
